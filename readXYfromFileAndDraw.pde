@@ -1,5 +1,8 @@
-//PROCESSING
-// Read x and y coordinates from text file and draw a 2D visual graph in Processing
+// PROCESSING .pde
+// Read x and y coordinates from text file and draw a 2D visual graph in Processing.
+// Version 1.0 (Feb. 5, 2015).
+// Abid Ali,
+// IMaR Gateway Technology, Institute of Technology Tralee
 
 BufferedReader reader;
 String line;
