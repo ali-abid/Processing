@@ -7,47 +7,27 @@
 BufferedReader reader;
 String line;
 
-
 void setup() {
-
-  size (500, 500);
-  rectMode(CENTER);
-  smooth();
-  reader = createReader("xy50.txt");
+  size(2,2);
+  // Open the file from the createWriter() example
+  reader = createReader("xy.txt");   
 }
+
 void draw() {
-  background(204);
   try {
     line = reader.readLine();
-  }
-  catch(IOException e) {
+  } catch (IOException e) {
     e.printStackTrace();
     line = null;
   }
-
-  if (line == null)
-  {
-    noLoop();
+  if (line == null) {
+    // Stop reading because of an error or file is empty
+    noLoop(); 
   } else {
-    String[] numXY = split(line, TAB);
-    int x = int(numXY[0]);
-    int y = int(numXY[1]);
-
-    translate(width/2, height/2);
-    // ellipse(50, 50,10,10);
-
-
-    //float a = atan2(y-height/2, x-width/2);
-    float a = atan2(y/2, x/2);
-    rotate(a);
-    delay(100);
-    println(x);
-
-    //println(mouseY);
-    //println(mouseX);
-    //fill(0);
-    rect(20, 0, 240, 10);
-    ellipse(150, 15, 30, 50);
-    //output.println(a);
+    String[] pieces = split(line, TAB);
+    int x = int(pieces[0]);
+    int y = int(pieces[1]);
+    point(x, y);
+    println(line);
   }
-}
+} 
