@@ -3,6 +3,9 @@ IMU Calculations Demo, by Starlino
 IMU Guide: http://starlino.com/imu_guide.html
 Acc_Gyro Board:  http://www.gadgetgangster.com/213
 
+Modified by Abid Ali, IMaR Institute of Technology, Tralee.
+March,2015
+
 Hardware Setup:
 
 Acc_Gyro <--->  Arduino
@@ -16,9 +19,24 @@ GY4      <--->  AN4
 
 */
 
+
+
 #define INPUT_COUNT 5     //number of analog inputs
 #define VDD 5000.0f       //Analog reference voltage in milivolts
 #define PI 3.14159265358979f
+
+//File reader 
+BufferedReader reader;
+String line;
+int AX[]; 
+int AY[];
+int AZ[];
+
+void setup(){
+  reader = createReader("xyz.txt");
+}
+
+
 
 int an[INPUT_COUNT];      //analog inputs  
 char firstSample;	  //marks first sample
