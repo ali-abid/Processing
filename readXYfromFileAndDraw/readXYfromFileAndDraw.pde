@@ -3,7 +3,7 @@
 // Version 1.0 (Feb. 5, 2015).
 // Abid Ali,
 // IMaR Gateway Technology, Institute of Technology Tralee
-
+//#define INPUT_COUNT 5
 BufferedReader reader;
 String line;
 
