@@ -10,7 +10,7 @@ String line;
 void setup() {
   size(2,2);
   // Open the file from the createWriter() example
-  reader = createReader("xy.txt");   
+  reader = createReader("xy50.txt");   
 }
 
 void draw() {
