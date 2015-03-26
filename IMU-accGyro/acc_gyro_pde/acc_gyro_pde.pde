@@ -7,9 +7,7 @@
 BufferedReader reader;
 String line;
 int count; int i; 
-int[] AY;
 int[] AX;
-
 void setup() {
   size(2, 2);
   // Open the file from the createWriter() example
@@ -30,22 +28,23 @@ void countLine() {
     noLoop();
     println("Total number of lines in file: ",i);
     // Set length of arrays AX, AY, AZ, GX, GY
-    AX = new int[i];
-    AY = new int[i];
-    
+    count = i;
+    AX = new int[count];    
   } else {
     //Counting number of lines in file
+    //println(i);
     i++;
-   // println("This is i:",i);
-    //count += i;
   }
-  
-//  println(count);
 } 
+
+void storeValueInArray(){
+  for(int i = 0; i < count; i++){
+      AX[i] = i;
+       println(AX[i]);
+  }
+}
 
 void draw(){
   countLine();
-  
-
-  
+  storeValueInArray();
 }
