@@ -5,18 +5,18 @@
 // IMaR Gateway Technology, Institute of Technology Tralee
 
 Table table;
-
+float[] AX;
+int[] AY;
 void setup() {
   table = loadTable("1round.csv", "header");
   println(table.getRowCount() + " total rows in table");
-  for (TableRow row : table.rows()) {
-    
-    String x = row.getString("x");
-    String y = row.getString("y");
-    String z    = row.getString("z");
-    
-    println("x:" +x+ "y:" +y+ "z:" +z);
+  // Set range of Arrays length
+  AX = new float[table.getRowCount()];
+  for (int i = 0; i < table.getRowCount (); i++)
+  {
+    //println(table.getFloat(i,"z"));
+    AX[i] = table.getFloat(i, "x");
+    println("AX array "+ i+ " store value: " + AX[i]);
   }
 }
-
 
