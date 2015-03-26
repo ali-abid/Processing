@@ -53,14 +53,15 @@ void setup() {
     
     
   }
-  int[] zeroLevel = new int[5];
-  int[] inpSens = new int[5]; 
-  char[] inpInvert = new char[5]; 
-  float wGyro;
+  int[] zeroLevel = new int[5];  // 0..2 accelerometer zero level (mV) @ 0 G
+  int[] inpSens = new int[5];    // 0..2 acceleromter input sensitivity (mv/g)
+  char[] inpInvert = new char[5]; // bits 0..5 invert input
+  float wGyro;                    // gyro weight/smooting factor
   
-  for (int i = 0; i <=2; i++) {
-    zeroLevel[i] = 1650;
-    inpSens[i] = 478;
+  //Setup parameters for Acc_Gyro board, see http://www.gadgetgangster.com/213
+  for (int i = 0; i <=2; i++) { // X,Y,Z axis
+    zeroLevel[i] = 1650;        // Accelerometer zero level (mV) @ 0 G
+    inpSens[i] = 478;           // Accelerometer Sensisitivity mV/g
   }
   for (int i=3; i<=4; i++) {
       inpSens[i] = 2000;      // Gyro Sensitivity mV/deg/ms    
@@ -89,8 +90,8 @@ void getEstimatedInclination(){
    final char signRzGyro;
    
    newMicros = second();
-   for(int i = 0; i <2 ; i++){
-        float[] temp = new float[4];
+   for(int i = 0; i <1 ; i++){
+        float[] temp = new float[3];
         temp[i]  = AX[i];
         temp[i+1] = AY[i];
         temp[i+2] = AZ[i];        
