@@ -9,6 +9,33 @@ float[] AX;
 float[] AY;
 float[] AZ;
 
+int INPUT_ACC = 3;
+float PI = 3.14159265358979f;
+float VDD = 5000.0f;
+
+
+
+float[] an = new float[INPUT_ACC]; // number of accelerometer coordinates
+char firstSample; // marks first sample;
+
+
+static class struct {
+  //char[] inpInvert = new char[5];
+  //int[] zeroLevel = new int[5];
+  //int[] inSens = new int[5];
+  // float wGyro;
+} 
+
+float[] RwEst = new float[3];
+long lastMicros;
+long interval;
+float[] RwAcc = new float[3];
+float[] RwGyro = new float[3];
+float[] Awz = new float[3];
+
+
+
+
 void setup() {
   table = loadTable("1round.csv", "header");
   println(table.getRowCount() + " total rows in table");
@@ -22,7 +49,62 @@ void setup() {
     AX[i] = table.getFloat(i, "x");
     AY[i] = table.getFloat(i, "y");
     AZ[i] = table.getFloat(i, "z");
-    println("Array "+ i+ "store : AX[" + AX[i]+"]" +"AY[" + AY[i]+"]" + "AZ[" + AZ[i]+"]");
+    // println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
+    
+    
   }
+  int[] zeroLevel = new int[5];
+  int[] inpSens = new int[5]; 
+  char[] inpInvert = new char[5]; 
+  float wGyro;
+  
+  for (int i = 0; i <=2; i++) {
+    zeroLevel[i] = 1650;
+    inpSens[i] = 478;
+  }
+  for (int i=3; i<=4; i++) {
+      inpSens[i] = 2000;      // Gyro Sensitivity mV/deg/ms    
+      zeroLevel[i] = 1230;     // Gyro Zero Level (mV) @ 0 deg/s
+  }
+  
+    inpInvert[0] = 1;  //Acc X
+    inpInvert[1] = 1;  //Acc Y
+    inpInvert[2] = 1;  //Acc Z
+    
+     //Gyro readings are sometimes inverted according to accelerometer coordonate system
+  //see http://starlino.com/imu_guide.html for discussion
+  //also see http://www.gadgetgangster.com/213 for graphical diagrams
+    inpInvert[3] = 1;  //Gyro X  
+    inpInvert[4] = 1;  //Gyro Y
+    
+    wGyro = 10;
+    getEstimatedInclination();
+    
 }
+
+void getEstimatedInclination(){
+   final int i1, w;
+   final float tmpf, tmpf2;
+   final long newMicros;
+   final char signRzGyro;
+   
+   newMicros = second();
+   for(int i = 0; i <2 ; i++){
+        float[] temp = new float[4];
+        temp[i]  = AX[i];
+        temp[i+1] = AY[i];
+        temp[i+2] = AZ[i];        
+     for(int j=0;j<3;j++){ 
+       an[j]   = temp[j];
+       
+   }
+   println(newMicros, i, an[i], an[i+1], an[i+2]);
+ }
+}
+
+//float getInput(char i){
+//  float tmpf = 0;
+  
+ // return tmpf;
+//}
 
