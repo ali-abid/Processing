@@ -6,7 +6,7 @@
 
 BufferedReader reader;
 String line;
-int count;
+int count; int i; 
 int[] AY;
 int[] AX;
 
@@ -27,38 +27,25 @@ void countLine() {
   if (line == null) {
     // Stop reading because of an error or file is empty
     // Declare lenght of Array
-    println(count);
-    AX = new int[count];
-    AY = new int[count];
     noLoop();
+    println("Total number of lines in file: ",i);
+    // Set length of arrays AX, AY, AZ, GX, GY
+    AX = new int[i];
+    AY = new int[i];
+    
   } else {
     //Counting number of lines in file
-    count++;
-  }
-} 
-
-void readXYData() {
-  try {
-    line = reader.readLine();
-  } 
-  catch (IOException e) {
-    e.printStackTrace();
-    line = null;
-  }
-  if (line == null) {
-    // Stop reading because of an error or file is empty
-    // Declare lenght of Array
-    noLoop();
-  } else {
-    int i = 0;
-    String[] pieces = split(line, TAB);
-    AX[i] = int(pieces[0]);
-    AY[i] = int(pieces[1]);
     i++;
+   // println("This is i:",i);
+    //count += i;
   }
+  
+//  println(count);
 } 
 
 void draw(){
   countLine();
-  //readXYData();
+  
+
+  
 }
