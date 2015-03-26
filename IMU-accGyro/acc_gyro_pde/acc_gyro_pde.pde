@@ -64,8 +64,8 @@ void setup() {
     inpSens[i] = 478;           // Accelerometer Sensisitivity mV/g
   }
   for (int i=3; i<=4; i++) {
-      inpSens[i] = 2000;      // Gyro Sensitivity mV/deg/ms    
-      zeroLevel[i] = 1230;     // Gyro Zero Level (mV) @ 0 deg/s
+      inpSens[i] = 2000;        // Gyro Sensitivity mV/deg/ms    
+      zeroLevel[i] = 1230;      // Gyro Zero Level (mV) @ 0 deg/s
   }
   
     inpInvert[0] = 1;  //Acc X
@@ -82,14 +82,16 @@ void setup() {
     getEstimatedInclination();
     
 }
-
+// Get Estimated method 
 void getEstimatedInclination(){
    final int i1, w;
    final float tmpf, tmpf2;
    final long newMicros;
    final char signRzGyro;
+
+// Get data from AX[0] AY[0] AZ[0]
+   newMicros = second();     // Save the time when sample is taken
    
-   newMicros = second();
    for(int i = 0; i <1 ; i++){
         float[] temp = new float[3];
         temp[i]  = AX[i];
