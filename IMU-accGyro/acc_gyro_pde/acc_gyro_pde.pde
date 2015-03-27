@@ -89,7 +89,7 @@ void getEstimatedInclination(){
    final long newMicros;
    final char signRzGyro;
 
-// Get data from AX[0] AY[0] AZ[0]
+// Get raw data from AX[0] AY[0] AZ[0]
    newMicros = second();     // Save the time when sample is taken
    
    for(int i = 0; i <1 ; i++){
@@ -103,6 +103,11 @@ void getEstimatedInclination(){
    }
    println(newMicros, i, an[i], an[i+1], an[i+2]);
  }
+ 
+ //Compute interval since last sampling time
+ interval = newMicros - lastMicros;
+ lastMicros = newMicros;
+ 
 }
 
 //float getInput(char i){
