@@ -20,7 +20,7 @@ int[] zeroLevel = new int[5];  // 0..2 accelerometer zero level (mV) @ 0 G
 int[] inpSens = new int[5];    // 0..2 acceleromter input sensitivity (mv/g)
 char[] inpInvert = new char[5]; // bits 0..5 invert input
 
-char firstSample; // marks first sample;
+int firstSample; // marks first sample;
 
 
 static class struct {
@@ -87,7 +87,7 @@ void getEstimatedInclination() {
   final int i1, w1;
   final float tmpf, tmpf2;
   final long newMicros;
-  final char signRzGyro;
+  final int signRzGyro;
 
   // Get raw data from AX[0] AY[0] AZ[0]
   newMicros = second();     // Save the time when sample is taken
@@ -111,8 +111,49 @@ void getEstimatedInclination() {
   for (int w = 0; w <=2; w++) {
     RwAcc[w] = getInput(w);
   }
+  //println(RwAcc);
   // normalize vector ( convert to a vector with same direction and with length 1)
   normalize3DVector(RwAcc);
+  //println(RwAcc);
+  
+  if (firstSample == 1){
+    for(int w=0;w<=2;w++) RwEst[w] = RwAcc[w];    //initialize with accelerometer readings
+  }else{
+    //evaluate RwGyro vector
+    if(abs(RwEst[2]) < 0.1){
+      //Rz is too small and because it is used as reference for computing Axz, Ayz it's error fluctuations will amplify leading to bad results
+      //in this case skip the gyro data and just use previous estimate
+      for(int w=0;w<=2;w++) RwGyro[w] = RwEst[w];
+    }else{
+      //get angles between projection of R on ZX/ZY plane and Z axis, based on last RwEst
+      for(int w=0;w<=1;w++){
+        tmpf = getInput(3 + w);                         //get current gyro rate in deg/ms
+        tmpf *= interval / 1000.0f;                     //get angle change in deg
+        Awz[w] = atan2(RwEst[w],RwEst[2]) * 180 / PI;   //get angle and convert to degrees        
+        Awz[w] += tmpf;                                 //get updated angle according to gyro movement
+      }
+      
+      //estimate sign of RzGyro by looking in what qudrant the angle Axz is, 
+      //RzGyro is pozitive if  Axz in range -90 ..90 => cos(Awz) >= 0
+      signRzGyro = ( cos(Awz[0] * PI / 180) >=0 ) ? 1 : -1;
+      
+      //reverse calculation of RwGyro from Awz angles, for formulas deductions see  http://starlino.com/imu_guide.html
+      for(int w=0;w<=1;w++){
+        RwGyro[0] = sin(Awz[0] * PI / 180);
+        RwGyro[0] /= sqrt( 1 + (cos(Awz[0] * PI / 180)*cos(Awz[0] * PI / 180)) * (tan(Awz[1] * PI / 180)*tan(Awz[1] * PI / 180)) );
+        RwGyro[1] = sin(Awz[1] * PI / 180);
+        RwGyro[1] /= sqrt( 1 + (cos(Awz[1] * PI / 180)*cos(Awz[1] * PI / 180)) * (tan(Awz[0] * PI / 180)*tan(Awz[0] * PI / 180)) );        
+      }
+      RwGyro[2] = signRzGyro * sqrt(1 - (RwGyro[0]*RwGyro[0]) - (RwGyro[1]*RwGyro[1]));
+    }
+    
+    //combine Accelerometer and gyro readings
+    for(int w=0;w<=2;w++) RwEst[w] = (RwAcc[w] + config.wGyro* RwGyro[w]) / (1 + config.wGyro);
+
+    normalize3DVector(RwEst);  
+   
+  }
+  firstSample = 0;
   
   
 }
