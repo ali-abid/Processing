@@ -4,6 +4,12 @@
 // Abid Ali,
 // IMaR Technology Gateway, Institute of Technology Tralee
 
+//Task: Following Arduino code converted into Processing, Now next task will be, using the following algorithm for accelerometer and 
+// gyro combination data.
+// Input of this algorithm will be .csv file parameter time , X Y Z  GY GX  and output would be expected well filtered Acc_Gyro combication
+//data.
+
+
 Table table;
 float[] AX;
 float[] AY;
