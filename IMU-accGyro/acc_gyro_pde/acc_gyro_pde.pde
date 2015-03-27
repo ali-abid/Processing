@@ -19,6 +19,7 @@ float[] an = new float[INPUT_ACC]; // number of accelerometer coordinates
 int[] zeroLevel = new int[5];  // 0..2 accelerometer zero level (mV) @ 0 G
 int[] inpSens = new int[5];    // 0..2 acceleromter input sensitivity (mv/g)
 char[] inpInvert = new char[5]; // bits 0..5 invert input
+float wGyro;
 
 int firstSample; // marks first sample;
 
@@ -85,7 +86,7 @@ void setup() {
 // Get Estimated method 
 void getEstimatedInclination() {
   final int i1, w1;
-  final float tmpf, tmpf2;
+  float tmpf, tmpf2;
   final long newMicros;
   final int signRzGyro;
 
@@ -148,7 +149,9 @@ void getEstimatedInclination() {
     }
     
     //combine Accelerometer and gyro readings
-    for(int w=0;w<=2;w++) RwEst[w] = (RwAcc[w] + config.wGyro* RwGyro[w]) / (1 + config.wGyro);
+    for(int w=0;w<=2;w++){
+      RwEst[w] = (RwAcc[w] + wGyro* RwGyro[w]) / (1 + wGyro);
+    }
 
     normalize3DVector(RwEst);  
    
