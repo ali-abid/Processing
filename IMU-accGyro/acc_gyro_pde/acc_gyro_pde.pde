@@ -111,6 +111,18 @@ void getEstimatedInclination() {
   for (int w = 0; w <=2; w++) {
     RwAcc[w] = getInput(w);
   }
+  // normalize vector ( convert to a vector with same direction and with length 1)
+  normalize3DVector(RwAcc);
+  
+  
+}
+
+void normalize3DVector(float[] vector){
+  final float R;  
+  R = sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
+  vector[0] /= R;
+  vector[1] /= R;  
+  vector[2] /= R;  
 }
 
 //For accelerometer it will return g (acceleration), applies when xyz = 0 to 2
