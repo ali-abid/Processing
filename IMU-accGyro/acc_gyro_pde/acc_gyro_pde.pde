@@ -15,7 +15,7 @@ float[] AX;
 float[] AY;
 float[] AZ;
 
-int INPUT_ACC = 3;
+int INPUT_ACC = 5;
 float PI = 3.14159265358979f;
 float VDD = 5000.0f;
 
@@ -42,7 +42,8 @@ long lastMicros;
 long interval;
 float[] RwAcc = new float[3];
 float[] RwGyro = new float[3];
-float[] Awz = new float[3];
+float[] Awz = new float[2];
+int ii = 0;
 
 
 
@@ -60,7 +61,7 @@ void setup() {
     AX[i] = table.getFloat(i, "x");
     AY[i] = table.getFloat(i, "y");
     AZ[i] = table.getFloat(i, "z");
-    println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
+   // println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
   }
 
 
@@ -89,29 +90,34 @@ void setup() {
   wGyro = 10;
   // Mark first sample equal to true and assign first Accelerometer raw data into raw estimation vector
   firstSample = 1;
-  getEstimatedInclination();
-}
-void draw() {
-  //println("Allah");
+  for(int i = 0; i < AX.length; i++){
+      getEstimatedInclination();
+      println("Time interval", interval);
+      println("Raw Accelerometer", RwAcc[0]);
+      println("Raw Estimate", RwEst[0]);
+      //println(AX.length);
+  }
 }
 
+void draw(){
+  //println();
+}
 
 // Get Estimated method 
 void getEstimatedInclination() {
   boolean loop = true;
-  int ii = 0;
   float tmpf, tmpf2;
   final long newMicros;
   final int signRzGyro;
 
   // Get raw data from AX[0] AY[0] AZ[0]
-  newMicros = second();     // Save the time when sample is taken
-
+  newMicros = millis();     // Save the time when sample is taken
+  //println(newMicros);
   while (loop) {
     an[0]  = AX[ii];
     an[1] = AY[ii];
     an[2] = AZ[ii];        
-    println(newMicros, ii, an[0], an[1], an[2]);
+    //println(newMicros, ii, an[0], an[1], an[2]);
     loop = false;
     ii++;
   }
@@ -119,10 +125,11 @@ void getEstimatedInclination() {
   //Compute interval since last sampling time
   interval = newMicros - lastMicros;
   lastMicros = newMicros;
-
+  
   //get accelerometer reading in g, gives us RwAcc vector
   for (int w = 0; w <=2; w++) {
     RwAcc[w] = getInput(w);
+    //println("Raw w loop",w);
   }
   //println(RwAcc);
 
