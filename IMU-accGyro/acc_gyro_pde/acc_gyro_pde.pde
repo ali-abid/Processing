@@ -60,7 +60,7 @@ void setup() {
     AX[i] = table.getFloat(i, "x");
     AY[i] = table.getFloat(i, "y");
     AZ[i] = table.getFloat(i, "z");
-    //println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
+    println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
   }
 
 
@@ -89,12 +89,16 @@ void setup() {
   wGyro = 10;
   // Mark first sample equal to true and assign first Accelerometer raw data into raw estimation vector
   firstSample = 1;
-  
   getEstimatedInclination();
 }
+void draw() {
+  //println("Allah");
+}
+
+
 // Get Estimated method 
 void getEstimatedInclination() {
-  final int i1, w1;
+  int ii = 0;
   float tmpf, tmpf2;
   final long newMicros;
   final int signRzGyro;
@@ -102,15 +106,16 @@ void getEstimatedInclination() {
   // Get raw data from AX[0] AY[0] AZ[0]
   newMicros = second();     // Save the time when sample is taken
 
-  for (int i = 0; i <1; i++) {
-    float[] temp = new float[3];
-    temp[i]  = AX[i];
-    temp[i+1] = AY[i];
-    temp[i+2] = AZ[i];        
-    for (int j=0; j<3; j++) { 
-      an[j]   = temp[j];
+  for (int i = ii; i < ii+1; i++) {
+    an[0]  = AX[i];
+    an[1] = AY[i];
+    an[2] = AZ[i];        
+    println(newMicros, i, an[0], an[1], an[2]);
+    if (ii < AX.length-1) {
+      ii++;
+    } else {
+      println("Done");
     }
-   //println(newMicros, i, an[i], an[i+1], an[i+2]);
   }
 
   //Compute interval since last sampling time
@@ -122,56 +127,53 @@ void getEstimatedInclination() {
     RwAcc[w] = getInput(w);
   }
   //println(RwAcc);
-  
+
   // normalize vector ( convert to a vector with same direction and with length 1)
   normalize3DVector(RwAcc);
-  println(RwAcc);
-  
-  if (firstSample == 1){
-    for(int w=0;w<=2;w++) RwEst[w] = RwAcc[w];    //initialize with accelerometer readings
-  }else{
+  //println(RwAcc);
+
+  if (firstSample == 1) {
+    for (int w=0; w<=2; w++) RwEst[w] = RwAcc[w];    //initialize with accelerometer readings
+  } else {
     //evaluate RwGyro vector
-    if(abs(RwEst[2]) < 0.1){
+    if (abs(RwEst[2]) < 0.1) {
       //Rz is too small and because it is used as reference for computing Axz, Ayz it's error fluctuations will amplify leading to bad results
       //in this case skip the gyro data and just use previous estimate
-      for(int w=0;w<=2;w++) RwGyro[w] = RwEst[w];
-    }else{
+      for (int w=0; w<=2; w++) RwGyro[w] = RwEst[w];
+    } else {
       //get angles between projection of R on ZX/ZY plane and Z axis, based on last RwEst
-      for(int w=0;w<=1;w++){
+      for (int w=0; w<=1; w++) {
         tmpf = getInput(3 + w);                         //get current gyro rate in deg/ms
         tmpf *= interval / 1000.0f;                     //get angle change in deg
-        Awz[w] = atan2(RwEst[w],RwEst[2]) * 180 / PI;   //get angle and convert to degrees        
+        Awz[w] = atan2(RwEst[w], RwEst[2]) * 180 / PI;   //get angle and convert to degrees        
         Awz[w] += tmpf;                                 //get updated angle according to gyro movement
       }
-      
+
       //estimate sign of RzGyro by looking in what qudrant the angle Axz is, 
       //RzGyro is pozitive if  Axz in range -90 ..90 => cos(Awz) >= 0
       signRzGyro = ( cos(Awz[0] * PI / 180) >=0 ) ? 1 : -1;
-      
+
       //reverse calculation of RwGyro from Awz angles, for formulas deductions see  http://starlino.com/imu_guide.html
-      for(int w=0;w<=1;w++){
+      for (int w=0; w<=1; w++) {
         RwGyro[0] = sin(Awz[0] * PI / 180);
         RwGyro[0] /= sqrt( 1 + (cos(Awz[0] * PI / 180)*cos(Awz[0] * PI / 180)) * (tan(Awz[1] * PI / 180)*tan(Awz[1] * PI / 180)) );
         RwGyro[1] = sin(Awz[1] * PI / 180);
-        RwGyro[1] /= sqrt( 1 + (cos(Awz[1] * PI / 180)*cos(Awz[1] * PI / 180)) * (tan(Awz[0] * PI / 180)*tan(Awz[0] * PI / 180)) );        
+        RwGyro[1] /= sqrt( 1 + (cos(Awz[1] * PI / 180)*cos(Awz[1] * PI / 180)) * (tan(Awz[0] * PI / 180)*tan(Awz[0] * PI / 180)) );
       }
       RwGyro[2] = signRzGyro * sqrt(1 - (RwGyro[0]*RwGyro[0]) - (RwGyro[1]*RwGyro[1]));
     }
-    
+
     //combine Accelerometer and gyro readings
-    for(int w=0;w<=2;w++){
+    for (int w=0; w<=2; w++) {
       RwEst[w] = (RwAcc[w] + wGyro* RwGyro[w]) / (1 + wGyro);
     }
 
-    normalize3DVector(RwEst);  
-   
+    normalize3DVector(RwEst);
   }
   firstSample = 0;
-  
-  
 }
 
-void normalize3DVector(float[] vector){
+void normalize3DVector(float[] vector) {
   final float R;  
   R = sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
   vector[0] /= R;
@@ -179,7 +181,7 @@ void normalize3DVector(float[] vector){
   vector[1] /= R;
   //println(vector[1]); 
   vector[2] /= R;
-  //println(vector[2]);  
+  //println(vector[2]);
 }
 
 //For accelerometer it will return g (acceleration), applies when xyz = 0 to 2
