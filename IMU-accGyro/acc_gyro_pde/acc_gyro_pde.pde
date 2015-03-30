@@ -87,6 +87,9 @@ void setup() {
   inpInvert[4] = 1;  //Gyro Y
 
   wGyro = 10;
+  // Mark first sample equal to true and assign first Accelerometer raw data into raw estimation vector
+  firstSample = 1;
+  
   getEstimatedInclination();
 }
 // Get Estimated method 
