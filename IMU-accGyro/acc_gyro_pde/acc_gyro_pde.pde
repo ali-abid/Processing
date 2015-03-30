@@ -60,7 +60,7 @@ void setup() {
     AX[i] = table.getFloat(i, "x");
     AY[i] = table.getFloat(i, "y");
     AZ[i] = table.getFloat(i, "z");
-    // println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
+    //println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
   }
 
 
@@ -107,7 +107,7 @@ void getEstimatedInclination() {
     for (int j=0; j<3; j++) { 
       an[j]   = temp[j];
     }
-    println(newMicros, i, an[i], an[i+1], an[i+2]);
+   //println(newMicros, i, an[i], an[i+1], an[i+2]);
   }
 
   //Compute interval since last sampling time
@@ -119,9 +119,10 @@ void getEstimatedInclination() {
     RwAcc[w] = getInput(w);
   }
   //println(RwAcc);
+  
   // normalize vector ( convert to a vector with same direction and with length 1)
   normalize3DVector(RwAcc);
-  //println(RwAcc);
+  println(RwAcc);
   
   if (firstSample == 1){
     for(int w=0;w<=2;w++) RwEst[w] = RwAcc[w];    //initialize with accelerometer readings
@@ -171,8 +172,11 @@ void normalize3DVector(float[] vector){
   final float R;  
   R = sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
   vector[0] /= R;
-  vector[1] /= R;  
-  vector[2] /= R;  
+  //println(vector[0]);
+  vector[1] /= R;
+  //println(vector[1]); 
+  vector[2] /= R;
+  //println(vector[2]);  
 }
 
 //For accelerometer it will return g (acceleration), applies when xyz = 0 to 2
@@ -180,9 +184,13 @@ void normalize3DVector(float[] vector){
 float getInput(int i) {
   float tmpf = 0;
   tmpf = an[i] * VDD/1023.0f;   //voltage mV
+  //println(tmpf);
   tmpf -= zeroLevel[i];         //voltage relative to zero level mV
+  //println(tmpf);
   tmpf /= inpSens[i];           //input sensitivity in mv/G(acc) or mV/deg/ms(gyro)
+  //println(tmpf);
   tmpf *= inpInvert[i];         //invert axis value according to cofiguration;
+  //println(tmpf);
   return tmpf;
 }
 
