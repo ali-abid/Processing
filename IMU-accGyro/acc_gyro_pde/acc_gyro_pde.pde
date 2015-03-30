@@ -93,8 +93,8 @@ void setup() {
   for(int i = 0; i < AX.length; i++){
       getEstimatedInclination();
       println("Time interval", interval);
-      println("Raw Accelerometer", RwAcc[0]);
-      println("Raw Estimate", RwEst[0]);
+      //println("Raw Accelerometer", RwAcc[0]);
+      //println("Raw Estimate", RwEst[0]);
       //println(AX.length);
   }
 }
@@ -115,8 +115,8 @@ void getEstimatedInclination() {
   //println(newMicros);
   while (loop) {
     an[0]  = AX[ii];
-    an[1] = AY[ii];
-    an[2] = AZ[ii];        
+    an[1] = AZ[ii];
+    an[2] = AY[ii];        
     //println(newMicros, ii, an[0], an[1], an[2]);
     loop = false;
     ii++;
@@ -148,6 +148,7 @@ void getEstimatedInclination() {
     } else {
       //get angles between projection of R on ZX/ZY plane and Z axis, based on last RwEst
       for (int w=0; w<=1; w++) {
+        println("ZX/ZY", w);
         tmpf = getInput(3 + w);                         //get current gyro rate in deg/ms
         tmpf *= interval / 1000.0f;                     //get angle change in deg
         Awz[w] = atan2(RwEst[w], RwEst[2]) * 180 / PI;   //get angle and convert to degrees        
