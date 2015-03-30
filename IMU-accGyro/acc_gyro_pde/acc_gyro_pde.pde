@@ -98,6 +98,7 @@ void draw() {
 
 // Get Estimated method 
 void getEstimatedInclination() {
+  boolean loop = true;
   int ii = 0;
   float tmpf, tmpf2;
   final long newMicros;
@@ -106,16 +107,13 @@ void getEstimatedInclination() {
   // Get raw data from AX[0] AY[0] AZ[0]
   newMicros = second();     // Save the time when sample is taken
 
-  for (int i = ii; i < ii+1; i++) {
-    an[0]  = AX[i];
-    an[1] = AY[i];
-    an[2] = AZ[i];        
-    println(newMicros, i, an[0], an[1], an[2]);
-    if (ii < AX.length-1) {
-      ii++;
-    } else {
-      println("Done");
-    }
+  while (loop) {
+    an[0]  = AX[ii];
+    an[1] = AY[ii];
+    an[2] = AZ[ii];        
+    println(newMicros, ii, an[0], an[1], an[2]);
+    loop = false;
+    ii++;
   }
 
   //Compute interval since last sampling time
