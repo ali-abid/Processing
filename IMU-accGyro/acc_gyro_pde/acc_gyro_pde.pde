@@ -19,7 +19,7 @@ int INPUT_ACC = 5;
 float PI = 3.14159265358979f;
 float VDD = 5000.0f;
 
-
+int linei = 0;
 
 float[] an = new float[INPUT_ACC]; // number of accelerometer coordinates
 int[] zeroLevel = new int[5];  // 0..2 accelerometer zero level (mV) @ 0 G
@@ -30,13 +30,6 @@ float wGyro;
 int firstSample; // marks first sample;
 
 
-static class struct {
-  //char[] inpInvert = new char[5];
-  //int[] zeroLevel = new int[5];
-  //int[] inSens = new int[5];
-  // float wGyro;
-} 
-
 float[] RwEst = new float[3];
 long lastMicros;
 long interval;
@@ -45,12 +38,18 @@ float[] RwGyro = new float[3];
 float[] Awz = new float[2];
 int ii = 0;
 
+float[] vals;
 
 
 
 void setup() {
+  size(800, 300);
+  smooth();
+  // An array of random values
+  vals = new float[width];
+
   table = loadTable("1round.csv", "header");
-  println(table.getRowCount() + " total rows in table");
+  println("Total number of lines are in file: ", table.getRowCount());
   // Set range of Arrays length
   AX = new float[table.getRowCount()];
   AY = new float[table.getRowCount()];
@@ -61,9 +60,8 @@ void setup() {
     AX[i] = table.getFloat(i, "x");
     AY[i] = table.getFloat(i, "y");
     AZ[i] = table.getFloat(i, "z");
-   // println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
+    // println("Array "+ i+ " store : AX[" + AX[i]+"]" +" AY[" + AY[i]+"]" + " AZ[" + AZ[i]+"]");
   }
-
 
   float wGyro;                    // gyro weight/smooting factor
 
@@ -90,19 +88,43 @@ void setup() {
   wGyro = 10;
   // Mark first sample equal to true and assign first Accelerometer raw data into raw estimation vector
   firstSample = 1;
-  for(int i = 0; i < AX.length; i++){
-      getEstimatedInclination();
-      println("Time interval", interval);
-      println("Row number:", i);
-      for(int j = 0; j < 3; i++){
-          println("Raw Accelerometer", RwAcc[j]);
-           println("Raw Estimate", RwEst[j]);
-      }
-      //println(AX.length);
-  }
+
+
+  //println(AX.length);
 }
 
-void draw(){
+void draw() {
+
+  background(255);
+  for (int i = 0; i < AX.length; i++) {
+    println("Line number: ", i);         //Count each line inside .csv file
+    getEstimatedInclination();          //Run algorithm
+    // Print Raw Accelrometer values
+    println(" Accelerometer  X: ", RwAcc[0], " Y: ", RwAcc[1], " Z: ", RwAcc[2]);
+
+
+    vals[i] = RwAcc[0];                   //Vals[] size equal to lenght of window width 
+    stroke(255, 0, 0);                    // Stroke X coordinate
+    strokeWeight(2);
+    print("X = ");
+    println(vals[i]);
+    line(i, vals[i], i+1, height - vals[i+1]);
+
+
+    vals[i+AX.length] = RwAcc[1];           //Adding AX.length for avoiding overlapping  
+    stroke(0, 255, 0);                      // Stroke Y coordinate
+    print("Y = ");
+    println(vals[i+AX.length]);
+    line(i+AX.length, vals[i+AX.length], (i+AX.length)+1, height - vals[(i+AX.length)+1]);
+
+
+    vals[i+AX.length*2] = RwAcc[2];           //Adding AX.length and multiply 2 for avoiding overlapping  
+    stroke(0, 0, 255);                      // Stroke Z coordinate
+    print("Z = ");
+    println(vals[i+AX.length*2]);
+    line(i+AX.length*2, vals[i+AX.length*2], (i+AX.length*2)+1, height - vals[(i+AX.length*2)+1]);
+  }
+  noLoop();
   //println();
 }
 
@@ -128,7 +150,7 @@ void getEstimatedInclination() {
   //Compute interval since last sampling time
   interval = newMicros - lastMicros;
   lastMicros = newMicros;
-  
+
   //get accelerometer reading in g, gives us RwAcc vector
   for (int w = 0; w <=2; w++) {
     RwAcc[w] = getInput(w);
