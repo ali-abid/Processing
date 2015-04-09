@@ -61,20 +61,20 @@ void setup() {
   for (int i = 0; i < table.getRowCount (); i++)
   {
 
-    X_ACC_DATA[i] = table.getFloat(i, "x");
-    Y_ACC_DATA[i] = table.getFloat(i, "y");
-    Z_ACC_DATA[i] = table.getFloat(i, "z"); 
+    X_ACC_DATA[i] = table.getFloat(i, "FillX");
+    Y_ACC_DATA[i] = table.getFloat(i, "FillY");
+    Z_ACC_DATA[i] = table.getFloat(i, "FillZ"); 
     //println("Array "+ i+ " store : X_ACC_DATA[" + X_ACC_DATA[i]+"]" +" Y_ACC_DATA[" + Y_ACC_DATA[i]+"]" + " Z_ACC_DATA[" + Z_ACC_DATA[i]+"]");
 
     X_GYR_DATA[i] = table.getFloat(i, "Gx");
-    Y_GYR_DATA[i] = table.getFloat(i, "Gy");
-    Z_GYR_DATA[i] = table.getFloat(i, "Gz");
+    //Y_GYR_DATA[i] = table.getFloat(i, "Gy");
+    //Z_GYR_DATA[i] = table.getFloat(i, "Gz");
     //println("Array "+ i+ " store : X_GYR_DATA[" + X_GYR_DATA[i]+"]" +" Y_GYR_DATA[" + Y_GYR_DATA[i]+"]" + " Z_GYR_DATA[" + Z_GYR_DATA[i]+"]");
 
-    X_FILL_DATA[i] = table.getFloat(i, "Fx");
-    Y_FILL_DATA[i] = table.getFloat(i, "Fy");
-    Z_FILL_DATA[i] = table.getFloat(i, "Fz");
-    println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
+    //X_FILL_DATA[i] = table.getFloat(i, "Fx");
+    //Y_FILL_DATA[i] = table.getFloat(i, "Fy");
+    //Z_FILL_DATA[i] = table.getFloat(i, "Fz");
+    // println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
   }
 } 
 
@@ -126,28 +126,24 @@ void draw() {
 
 
   for (int i = 0; i < X_ACC_DATA.length; i++ ) {
-    //Do things 4 time in seconds
-    //if (millis()-lastTime > 250) {
-      x_acc = X_ACC_DATA[i];
-      y_acc = Y_ACC_DATA[i];
-      z_acc = Z_ACC_DATA[i];
-      //Show accel data
-      pushMatrix();
-      translate(width/2, height/2, -50);
-      rotateX(radians(-x_acc - x_rotation));
-      rotateY(radians(-y_acc));
-      draw_rect(56, 140, 206);
-      popMatrix();
+    delay(10);
+    x_acc = X_ACC_DATA[i];
+    y_acc = Y_ACC_DATA[i];
+    z_acc = Z_ACC_DATA[i];
+    //Show accel data
+    pushMatrix();
+    translate(width/2, height/2, -50);
+    rotateX(radians(-x_acc - x_rotation));
+    rotateY(radians(-y_acc));
+    draw_rect(56, 140, 206);
+    popMatrix();
 
-      textSize(24);
-      String accStr = "(" + (int) x_acc + ", " + (int) y_acc + ")";
-      println(y_acc);
-      fill(56, 140, 206);
-      text("Accelerometer", (int) width/2.0 - 50, 25);
-      text(accStr, (int) (width/2.0) - 30, 50);
-
-      //lastTime = millis();
-    //}
+    textSize(24);
+    String accStr = "(" + (int) x_acc + ", " + (int) y_acc + ")";
+    println(y_acc);
+    fill(56, 140, 206);
+    text("Accelerometer", (int) width/2.0 - 50, 25);
+    text(accStr, (int) (width/2.0) - 30, 50);
   }
 }
 
