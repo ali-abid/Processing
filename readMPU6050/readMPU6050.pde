@@ -4,8 +4,10 @@
 // Abid Ali,
 // IMaR Technology Gateway, Institute of Technology Tralee
 
-long lastTime = 0;
 
+
+long lastTime = 0;
+int qnum = 0;
 Table table;
 float[] X_ACC_DATA;
 float[] Y_ACC_DATA;
@@ -18,8 +20,15 @@ float[] Z_GYR_DATA;
 float[] X_FILL_DATA;
 float[] Y_FILL_DATA;
 float[] Z_FILL_DATA;
+float[] ANGLE;
 
+float [] q = new float [4];
+float [] hq = null;
+float [] Euler = new float [3]; // psi, theta, phi
 
+PFont font;
+//final int VIEW_SIZE_X = 1024, VIEW_SIZE_Y = 768;
+final int VIEW_SIZE_X = 800, VIEW_SIZE_Y = 600;
 
 //Task: Read 9 inputs from text file. These inputs are computed in VPython and saved into text file.
 float   dt;
@@ -33,13 +42,18 @@ float   x_fil;  //Filtered data
 float   y_fil;
 float   z_fil;
 
+PImage topside, downside, frontside, rightside;
+
 void setup() {
 
   lastTime = millis(); 
   //  size(640, 360, P3D); 
-  size(1400, 800, P3D);
-  noStroke();
-  colorMode(RGB, 256); 
+
+  //size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
+  textureMode(NORMAL);
+  fill(255);
+  stroke(color(44, 48, 32));
+
 
   table = loadTable("vpythonOutput.csv", "header");
   println("Total number of lines are in file: ", table.getRowCount());
@@ -57,93 +71,83 @@ void setup() {
   Y_FILL_DATA = new float[table.getRowCount()];
   Z_FILL_DATA = new float[table.getRowCount()];
 
-
+  ANGLE = new float[table.getRowCount()];
   for (int i = 0; i < table.getRowCount (); i++)
   {
 
-    X_ACC_DATA[i] = table.getFloat(i, "FillX");
-    Y_ACC_DATA[i] = table.getFloat(i, "FillY");
-    Z_ACC_DATA[i] = table.getFloat(i, "FillZ"); 
+    //X_ACC_DATA[i] = table.getFloat(i, "FillX");
+    //Y_ACC_DATA[i] = table.getFloat(i, "FillY");
+    //Z_ACC_DATA[i] = table.getFloat(i, "FillZ"); 
     //println("Array "+ i+ " store : X_ACC_DATA[" + X_ACC_DATA[i]+"]" +" Y_ACC_DATA[" + Y_ACC_DATA[i]+"]" + " Z_ACC_DATA[" + Z_ACC_DATA[i]+"]");
 
-    X_GYR_DATA[i] = table.getFloat(i, "Gx");
+    //X_GYR_DATA[i] = table.getFloat(i, "Gx");
     //Y_GYR_DATA[i] = table.getFloat(i, "Gy");
     //Z_GYR_DATA[i] = table.getFloat(i, "Gz");
     //println("Array "+ i+ " store : X_GYR_DATA[" + X_GYR_DATA[i]+"]" +" Y_GYR_DATA[" + Y_GYR_DATA[i]+"]" + " Z_GYR_DATA[" + Z_GYR_DATA[i]+"]");
 
-    //X_FILL_DATA[i] = table.getFloat(i, "Fx");
-    //Y_FILL_DATA[i] = table.getFloat(i, "Fy");
-    //Z_FILL_DATA[i] = table.getFloat(i, "Fz");
+    X_FILL_DATA[i] = table.getFloat(i, "FillX");
+    Y_FILL_DATA[i] = table.getFloat(i, "FillY");
+    Z_FILL_DATA[i] = table.getFloat(i, "FillZ");
     // println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
   }
+
+  // The font must be located in the sketch's "data" directory to load successfully
+  font = loadFont("CourierNew36.vlw"); 
+  // Loading the textures to the cube
+  // The png files alow to put the board holes so can increase  realism 
+  topside = loadImage("MPU6050 A.png");//Top Side
+  downside = loadImage("MPU6050 B.png");//Botm side
+  frontside = loadImage("MPU6050 E.png"); //Wide side
+  rightside = loadImage("MPU6050 F.png");// Narrow side
+  delay(100);
 } 
 
-void draw_rect(int r, int g, int b) {
-  scale(90);
-  beginShape(QUADS);
-
-  fill(r, g, b);
-  vertex(-1, 1.5, 0.25);
-  vertex( 1, 1.5, 0.25);
-  vertex( 1, -1.5, 0.25);
-  vertex(-1, -1.5, 0.25);
-
-  vertex( 1, 1.5, 0.25);
-  vertex( 1, 1.5, -0.25);
-  vertex( 1, -1.5, -0.25);
-  vertex( 1, -1.5, 0.25);
-
-  vertex( 1, 1.5, -0.25);
-  vertex(-1, 1.5, -0.25);
-  vertex(-1, -1.5, -0.25);
-  vertex( 1, -1.5, -0.25);
-
-  vertex(-1, 1.5, -0.25);
-  vertex(-1, 1.5, 0.25);
-  vertex(-1, -1.5, 0.25);
-  vertex(-1, -1.5, -0.25);
-
-  vertex(-1, 1.5, -0.25);
-  vertex( 1, 1.5, -0.25);
-  vertex( 1, 1.5, 0.25);
-  vertex(-1, 1.5, 0.25);
-
-  vertex(-1, -1.5, -0.25);
-  vertex( 1, -1.5, -0.25);
-  vertex( 1, -1.5, 0.25);
-  vertex(-1, -1.5, 0.25);
-
-  endShape();
+void readQ(int i) {
+  //Theta
+  //  for (int i = 0; i < ANGLE.length; i++) {
+  ANGLE[i] = atan2(X_FILL_DATA[i], Y_FILL_DATA[i]);
+  q[0] = cos(ANGLE[i]/2);
+  q[1] = X_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[2] = Y_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[3] = Z_FILL_DATA[i] * sin(ANGLE[i]/2);
+  //println(i);
+  println(q[0]);
+  //}
 }
+
 
 void draw() {
   background(0);
-  lights();
-
-  // Tweak the view of the rectangles
-  int distance = 50;
-  int x_rotation = 90;
-
-
-  for (int i = 0; i < X_ACC_DATA.length; i++ ) {
-    delay(10);
-    x_acc = X_ACC_DATA[i];
-    y_acc = Y_ACC_DATA[i];
-    z_acc = Z_ACC_DATA[i];
-    //Show accel data
-    pushMatrix();
-    translate(width/2, height/2, -50);
-    rotateX(radians(-x_acc - x_rotation));
-    rotateY(radians(-y_acc));
-    draw_rect(56, 140, 206);
-    popMatrix();
-
-    textSize(24);
-    String accStr = "(" + (int) x_acc + ", " + (int) y_acc + ")";
-    println(y_acc);
-    fill(56, 140, 206);
-    text("Accelerometer", (int) width/2.0 - 50, 25);
-    text(accStr, (int) (width/2.0) - 30, 50);
+  //lights();
+  if (qnum < X_FILL_DATA.length) {
+    readQ(qnum);
+    //println(qnum);
+    qnum++;
+  } else {
+    noLoop();
+    println("File End");
+    qnum = 0;
   }
+  //delay(100);
+}
+
+// See Sebastian O.H. Madwick report 
+// "An efficient orientation filter for inertial and intertial/magnetic sensor arrays" Chapter 2 Quaternion representation
+
+void quaternionToEuler(float [] q, float [] euler) {
+  euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
+  euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
+  euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
+}
+
+float [] quatProd(float [] a, float [] b) {
+  float [] q = new float[4];
+
+  q[0] = a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3];
+  q[1] = a[0] * b[1] + a[1] * b[0] + a[2] * b[3] - a[3] * b[2];
+  q[2] = a[0] * b[2] - a[1] * b[3] + a[2] * b[0] + a[3] * b[1];
+  q[3] = a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + a[3] * b[0];
+
+  return q;
 }
 
