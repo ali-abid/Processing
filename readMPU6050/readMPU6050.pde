@@ -42,7 +42,7 @@ float   x_fil;  //Filtered data
 float   y_fil;
 float   z_fil;
 
-PImage topside, downside, frontside, rightside;
+PImage topside, downside, frontside, rightside, handTopside, waistTopside;
 
 void setup() {
   size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
@@ -95,6 +95,9 @@ void setup() {
   downside = loadImage("MPU6050_B.png");//Botm side
   frontside = loadImage("MPU6050_E.png"); //Wide side
   rightside = loadImage("MPU6050_F.png");// Narrow side
+  
+   handTopside = loadImage("handTop.png");//Top Side
+   waistTopside = loadImage("waistTop.png");//Top Side
   delay(100);
 } 
 
@@ -176,7 +179,7 @@ void sideboardb(PImage imag) {
 
 
 
-void drawCube() {
+void showWaist() {
   pushMatrix();
   translate(VIEW_SIZE_X/2, VIEW_SIZE_Y/2 + 50, 0);
   //scale(5,5,5);
@@ -189,7 +192,29 @@ void drawCube() {
   rotateY(-Euler[0]);
 
 
-  topboard(topside);
+  topboard(waistTopside);
+  botomboard(downside);
+  sideboarda(frontside);
+  sideboardb(rightside);
+
+
+  popMatrix();
+}
+
+void showHand() {
+  pushMatrix();
+  translate(VIEW_SIZE_X/1.3, VIEW_SIZE_Y/1.3 + 50, 0);
+  //scale(5,5,5);
+  scale(10);
+
+  // a demonstration of the following is at 
+  // http://www.varesano.net/blog/fabio/ahrs-sensor-fusion-orientation-filter-3d-graphical-rotating-cube
+  rotateZ(-Euler[2]);
+  rotateX(-Euler[1]);
+  rotateY(-Euler[0]);
+
+
+  topboard(handTopside);
   botomboard(downside);
   sideboarda(frontside);
   sideboardb(rightside);
@@ -210,7 +235,9 @@ void draw() {
     textAlign(LEFT, TOP);
     text("Q:\n" + q[0] + "\n" + q[1] + "\n" + q[2] + "\n" + q[3], 20, 20);
     text("Euler Angles:\nYaw (psi)  : " + degrees(Euler[0]) + "\nPitch (theta): " + degrees(Euler[1]) + "\nRoll (phi)  : " + degrees(Euler[2]), 200, 20);
-    drawCube();
+    //drawCube();
+    showWaist();
+    showHand();
     delay(100);
     qnum++;
   } else {
@@ -219,7 +246,8 @@ void draw() {
     qnum = 0;
   }
   //delay(100);
-  drawCube();
+  //drawCube();
+  
  
 }
 
