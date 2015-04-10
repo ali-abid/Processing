@@ -42,7 +42,7 @@ float   x_fil;  //Filtered data
 float   y_fil;
 float   z_fil;
 
-PImage topside, downside, frontside, rightside, handTopside, waistTopside;
+PImage topside, downside, frontside, rightside, handTopside, waistTopside, neckTopside;
 
 void setup() {
   size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
@@ -98,6 +98,8 @@ void setup() {
   
    handTopside = loadImage("handTop.png");//Top Side
    waistTopside = loadImage("waistTop.png");//Top Side
+   neckTopside = loadImage("neckTop.png");//Top Side
+   
   delay(100);
 } 
 
@@ -112,7 +114,7 @@ float [] readQ(int i) {
   return q;
 }
 void topboard(PImage imag) {
-  beginShape(QUADS);
+  beginShape(QUAD);
   texture(imag);
   // -Y "top" face
   vertex(-20, -1, -15, 0, 0);
@@ -178,10 +180,32 @@ void sideboardb(PImage imag) {
 
 
 
+void showNeck() {
+  pushMatrix();
+  translate(VIEW_SIZE_X/4, VIEW_SIZE_Y/4  + 50, 0);
+  //scale(5,5,5);
+  scale(10);
+
+  // a demonstration of the following is at 
+  // http://www.varesano.net/blog/fabio/ahrs-sensor-fusion-orientation-filter-3d-graphical-rotating-cube
+  rotateZ(-Euler[2]);
+  rotateX(-Euler[1]);
+  rotateY(-Euler[0]);
+
+
+  topboard(neckTopside);
+  botomboard(downside);
+  sideboarda(frontside);
+  sideboardb(rightside);
+
+
+  popMatrix();
+}
+
 
 void showWaist() {
   pushMatrix();
-  translate(VIEW_SIZE_X/2, VIEW_SIZE_Y/2 + 50, 0);
+  translate(VIEW_SIZE_X/4, VIEW_SIZE_Y/2 + 50, 0);
   //scale(5,5,5);
   scale(10);
 
@@ -236,8 +260,10 @@ void draw() {
     text("Q:\n" + q[0] + "\n" + q[1] + "\n" + q[2] + "\n" + q[3], 20, 20);
     text("Euler Angles:\nYaw (psi)  : " + degrees(Euler[0]) + "\nPitch (theta): " + degrees(Euler[1]) + "\nRoll (phi)  : " + degrees(Euler[2]), 200, 20);
     //drawCube();
+    showNeck();
     showWaist();
     showHand();
+    
     delay(100);
     qnum++;
   } else {
