@@ -111,7 +111,7 @@ void readQ(int i) {
   q[2] = Y_FILL_DATA[i] * sin(ANGLE[i]/2);
   q[3] = Z_FILL_DATA[i] * sin(ANGLE[i]/2);
   //println(i);
-  println(q[0]);
+  //println(q[3]);
   //}
 }
 
@@ -121,6 +121,8 @@ void draw() {
   //lights();
   if (qnum < X_FILL_DATA.length) {
     readQ(qnum);
+    quaternionToEuler(q, Euler);
+    text("Point FreeIMU's X axis to your monitor then press \"h\"", 20, VIEW_SIZE_Y - 30);
     //println(qnum);
     qnum++;
   } else {
@@ -138,6 +140,9 @@ void quaternionToEuler(float [] q, float [] euler) {
   euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
   euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
+  println(euler[0]);
+  println(euler[1]);
+  println(euler[2]);
 }
 
 float [] quatProd(float [] a, float [] b) {
