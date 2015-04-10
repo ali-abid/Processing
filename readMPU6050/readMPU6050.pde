@@ -98,17 +98,14 @@ void setup() {
   delay(100);
 } 
 
-void readQ(int i) {
-  //Theta
-  //  for (int i = 0; i < ANGLE.length; i++) {
+float [] readQ(int i) {
   ANGLE[i] = atan2(X_FILL_DATA[i], Y_FILL_DATA[i]);
   q[0] = cos(ANGLE[i]/2);
-  q[1] = X_FILL_DATA[i] * sin(ANGLE[i]/2);
-  q[2] = Y_FILL_DATA[i] * sin(ANGLE[i]/2);
-  q[3] = Z_FILL_DATA[i] * sin(ANGLE[i]/2);
-  //println(i);
-  //println(q[3]);
-  //}
+  q[1] = -X_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[2] = -Y_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[3] = -Z_FILL_DATA[i] * sin(ANGLE[i]/2);
+  println(q);
+  return q;
 }
 void topboard(PImage imag) {
   beginShape(QUADS);
@@ -178,7 +175,8 @@ void sideboardb(PImage imag) {
 
 
 
-void drawCube() {  
+void drawCube() {
+  println("Hello");
   pushMatrix();
   translate(VIEW_SIZE_X/2, VIEW_SIZE_Y/2 + 50, 0);
   //scale(5,5,5);
@@ -204,38 +202,32 @@ void draw() {
   background(#000000);
   //lights();
   if (qnum < X_FILL_DATA.length) {
-    readQ(qnum);
-    if (hq != null) { // use home quaternion
-      quaternionToEuler(quatProd(hq, q), Euler);
-      text("Disable home position by pressing \"n\"", 20, VIEW_SIZE_Y - 30);
-    } else {
-      quaternionToEuler(q, Euler);
-      text("Point FreeIMU's X axis to your monitor then press \"h\"", 20, VIEW_SIZE_Y - 30);
-    }
-    qnum++;
+    q =  readQ(qnum);
+    quaternionToEuler(q, Euler);
+    text("Point FreeIMU's X axis to your monitor then press \"h\"", 20, VIEW_SIZE_Y - 30);
+
     textFont(font, 20);
     textAlign(LEFT, TOP);
     text("Q:\n" + q[0] + "\n" + q[1] + "\n" + q[2] + "\n" + q[3], 20, 20);
     text("Euler Angles:\nYaw (psi)  : " + degrees(Euler[0]) + "\nPitch (theta): " + degrees(Euler[1]) + "\nRoll (phi)  : " + degrees(Euler[2]), 200, 20);
     drawCube();
     delay(100);
+    qnum++;
   } else {
     noLoop();
     println("File End");
     qnum = 0;
   }
   //delay(100);
-drawCube();
+  drawCube();
 }
 void keyPressed() {
-  if(key == 'h') {
+  if (key == 'h') {
     println("pressed h");
-    
+
     // set hq the home quaternion as the quatnion conjugate coming from the sensor fusion
     hq = quatConjugate(q);
-    
-  }
-  else if(key == 'n') {
+  } else if (key == 'n') {
     println("pressed n");
     hq = null;
   }
@@ -286,5 +278,4 @@ float [] quatConjugate(float [] quat) {
 
   return conj;
 }
-
 

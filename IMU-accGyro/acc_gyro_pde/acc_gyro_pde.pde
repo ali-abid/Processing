@@ -43,12 +43,12 @@ float[] vals;
 
 
 void setup() {
-  size(800, 300);
+  size(2000, 800);
   smooth();
   // An array of random values
   vals = new float[width];
 
-  table = loadTable("1round.csv", "header");
+  table = loadTable("xyz36round.csv", "header");
   println("Total number of lines are in file: ", table.getRowCount());
   // Set range of Arrays length
   AX = new float[table.getRowCount()];
@@ -111,12 +111,11 @@ void draw() {
     line(i, vals[i], i+1, height - vals[i+1]);
 
 
-    vals[i+AX.length] = RwAcc[1];           //Adding AX.length for avoiding overlapping  
+    vals[i+AX.length] = random(RwAcc[1]*(-1));           //Adding AX.length for avoiding overlapping  
     stroke(0, 255, 0);                      // Stroke Y coordinate
     print("Y = ");
     println(vals[i+AX.length]);
     line(i+AX.length, vals[i+AX.length], (i+AX.length)+1, height - vals[(i+AX.length)+1]);
-
 
     vals[i+AX.length*2] = RwAcc[2];           //Adding AX.length and multiply 2 for avoiding overlapping  
     stroke(0, 0, 255);                      // Stroke Z coordinate
