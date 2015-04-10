@@ -49,7 +49,7 @@ void setup() {
   lastTime = millis(); 
   //  size(640, 360, P3D); 
 
-  //size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
+  size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
   textureMode(NORMAL);
   fill(255);
   stroke(color(44, 48, 32));
@@ -125,6 +125,10 @@ void draw() {
     text("Point FreeIMU's X axis to your monitor then press \"h\"", 20, VIEW_SIZE_Y - 30);
     //println(qnum);
     qnum++;
+    textFont(font, 20);
+    textAlign(LEFT, TOP);
+    text("Q:\n" + q[0] + "\n" + q[1] + "\n" + q[2] + "\n" + q[3], 20, 20);
+    text("Euler Angles:\nYaw (psi)  : " + degrees(Euler[0]) + "\nPitch (theta): " + degrees(Euler[1]) + "\nRoll (phi)  : " + degrees(Euler[2]), 200, 20);
   } else {
     noLoop();
     println("File End");
@@ -140,9 +144,6 @@ void quaternionToEuler(float [] q, float [] euler) {
   euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
   euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
-  println(euler[0]);
-  println(euler[1]);
-  println(euler[2]);
 }
 
 float [] quatProd(float [] a, float [] b) {
