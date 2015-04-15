@@ -30,6 +30,9 @@ float   x_fil;  //Filtered data
 float   y_fil;
 float   z_fil;
 
+int i = 0;
+Table table;
+
 // SET WINDOW SIZE
 final int VIEW_SIZE_X = 1400, VIEW_SIZE_Y = 800;
 
@@ -56,7 +59,7 @@ void setup() {
   Y_FILL_DATA = new float[table.getRowCount()];
   Z_FILL_DATA = new float[table.getRowCount()];
 
-  ANGLE = new float[table.getRowCount()];
+  //ANGLE = new float[table.getRowCount()];
   for (int i = 0; i < table.getRowCount (); i++)
   {
 
@@ -76,3 +79,77 @@ void setup() {
     // println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
   }
 }
+
+void readProcessedData(int i) {
+  delay(100);
+  // Tweak the view of the rectangles
+  int distance = 50;
+  int x_rotation = 90;
+  pushMatrix();
+  translate(5*width/6, height/2, -50);
+  rotateX(radians(-X_FILL_DATA[i] - x_rotation));
+  rotateY(radians(-Y_FILL_DATA[i]));
+  draw_rect(93, 175, 83);
+  popMatrix();
+
+  textSize(24);
+  String filStr = "(" + (int) X_FILL_DATA[i] + ", " + (int)Y_FILL_DATA[i] + ")";
+  fill(83, 175, 93);
+  text("Combination", (int) (5.0*width/6.0) - 40, 25);
+  text(filStr, (int) (5.0*width/6.0) - 20, 50);
+}
+
+void draw_rect(int r, int g, int b) {
+  scale(90);
+  beginShape(QUADS);
+
+  fill(r, g, b);
+  vertex(-1, 1.5, 0.25);
+  vertex( 1, 1.5, 0.25);
+  vertex( 1, -1.5, 0.25);
+  vertex(-1, -1.5, 0.25);
+
+  vertex( 1, 1.5, 0.25);
+  vertex( 1, 1.5, -0.25);
+  vertex( 1, -1.5, -0.25);
+  vertex( 1, -1.5, 0.25);
+
+  vertex( 1, 1.5, -0.25);
+  vertex(-1, 1.5, -0.25);
+  vertex(-1, -1.5, -0.25);
+  vertex( 1, -1.5, -0.25);
+
+  vertex(-1, 1.5, -0.25);
+  vertex(-1, 1.5, 0.25);
+  vertex(-1, -1.5, 0.25);
+  vertex(-1, -1.5, -0.25);
+
+  vertex(-1, 1.5, -0.25);
+  vertex( 1, 1.5, -0.25);
+  vertex( 1, 1.5, 0.25);
+  vertex(-1, 1.5, 0.25);
+
+  vertex(-1, -1.5, -0.25);
+  vertex( 1, -1.5, -0.25);
+  vertex( 1, -1.5, 0.25);
+  vertex(-1, -1.5, 0.25);
+
+  endShape();
+}
+
+void draw() { 
+
+  //Show combined data
+  if (i < table.getRowCount ()) {
+    background(0);
+    lights();
+    println("File line number :"i);
+    readProcessedData(i);
+    i++;
+  } else {
+    noLoop();
+    println("File End");
+    i = 0;
+  }
+} 
+
