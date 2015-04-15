@@ -63,9 +63,9 @@ void setup() {
   for (int i = 0; i < table.getRowCount (); i++)
   {
 
-    //X_ACC_DATA[i] = table.getFloat(i, "FillX");
-    //Y_ACC_DATA[i] = table.getFloat(i, "FillY");
-    //Z_ACC_DATA[i] = table.getFloat(i, "FillZ"); 
+    X_ACC_DATA[i] = table.getFloat(i, "x");
+    Y_ACC_DATA[i] = table.getFloat(i, "y");
+    Z_ACC_DATA[i] = table.getFloat(i, "z"); 
     //println("Array "+ i+ " store : X_ACC_DATA[" + X_ACC_DATA[i]+"]" +" Y_ACC_DATA[" + Y_ACC_DATA[i]+"]" + " Z_ACC_DATA[" + Z_ACC_DATA[i]+"]");
 
     //X_GYR_DATA[i] = table.getFloat(i, "Gx");
@@ -85,6 +85,16 @@ void readProcessedData(int i) {
   // Tweak the view of the rectangles
   int distance = 50;
   int x_rotation = 90;
+  
+  //Show accel data
+  pushMatrix();
+  translate(width/2, height/2, -50);
+  rotateX(radians(-X_ACC_DATA[i] - x_rotation));
+  rotateY(radians(-Y_ACC_DATA[i]));
+  draw_rect(56, 140, 206);
+  popMatrix();
+  
+  //Show Combined Data
   pushMatrix();
   translate(5*width/6, height/2, -50);
   rotateX(radians(-X_FILL_DATA[i] - x_rotation));
@@ -93,7 +103,13 @@ void readProcessedData(int i) {
   popMatrix();
 
   textSize(24);
+  String accStr = "(" + (int) X_ACC_DATA[i] + ", " + (int) Y_ACC_DATA[i]  + ")";
   String filStr = "(" + (int) X_FILL_DATA[i] + ", " + (int)Y_FILL_DATA[i] + ")";
+  
+  fill(56, 140, 206);
+  text("Accelerometer", (int) width/2.0 - 50, 25);
+  text(accStr, (int) (width/2.0) - 30, 50); 
+  
   fill(83, 175, 93);
   text("Combination", (int) (5.0*width/6.0) - 40, 25);
   text(filStr, (int) (5.0*width/6.0) - 20, 50);
@@ -143,7 +159,7 @@ void draw() {
   if (i < table.getRowCount ()) {
     background(0);
     lights();
-    println("File line number :"i);
+    println("File line number :",i);
     readProcessedData(i);
     i++;
   } else {
