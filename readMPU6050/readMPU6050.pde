@@ -113,11 +113,13 @@ float [] readQ(int i) {
   //println(q);
   return q;
 }
+
+
 void topboard(PImage imag) {
   beginShape(QUAD);
   texture(imag);
   // -Y "top" face
-  vertex(-20, -1, -15, 0, 0);
+  vertex(-20, -1, -15, 0, 0); // top width, hight
   vertex( 20, -1, -15, 1, 0);
   vertex( 20, -1, 15, 1, 1);
   vertex(-20, -1, 15, 0, 1);
@@ -178,6 +180,17 @@ void sideboardb(PImage imag) {
   endShape();
 }
 
+void topNeck(PImage imag) {
+  beginShape(QUAD);
+  texture(imag);
+  // -Y "top" face
+  vertex(-10, -1, -15, 0, 0); // top width, hight
+  vertex( 10, -1, -15, 1, 0);
+  vertex( 10, -1, 15, 1, 1);
+  vertex(-10, -1, 15, 0, 1);
+
+  endShape();
+}
 
 
 void showNeck() {
@@ -192,10 +205,11 @@ void showNeck() {
   rotateX(-Euler[1]);
   rotateY(-Euler[0]);
 
-
+  //topNeck(neckTopside);
+  
   topboard(neckTopside);
   botomboard(downside);
-  sideboarda(frontside);
+  sideboarda(rightside);
   sideboardb(rightside);
 
 
@@ -252,7 +266,7 @@ void draw() {
   //lights();
   if (qnum < X_FILL_DATA.length) {
     q =  readQ(qnum);
-    quaternionToEuler(q, Euler);
+    quaternionToEuler(q, Euler, ANGLE);
     text("LD Golf and IMaR Technology Gateway ", 20, VIEW_SIZE_Y - 30);
 
     textFont(font, 20);
@@ -280,13 +294,13 @@ void draw() {
 // See Sebastian O.H. Madwick report 
 // "An efficient orientation filter for inertial and intertial/magnetic sensor arrays" Chapter 2 Quaternion representation
 
-void quaternionToEuler(float [] q, float [] euler) {
+void quaternionToEuler(float [] q, float [] euler, float[] ANGLE) {
   euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
-  println("q0",q[0], "q1:", q[1], "q2: ",q[2], "q3",q[3]);
-  //euler[1] = asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
-  euler[1] = 0.6;
-  println(euler[1]);
+  //euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
+  euler[1] = ANGLE[qnum];
+  //euler[1] = 0.6;
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
+  println("Theta vaule: ", euler[1]);
 }
 
 
