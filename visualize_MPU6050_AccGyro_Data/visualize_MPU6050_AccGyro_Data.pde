@@ -30,6 +30,49 @@ float   x_fil;  //Filtered data
 float   y_fil;
 float   z_fil;
 
-PFont font;
 // SET WINDOW SIZE
-final int VIEW_SIZE_X = 1000, VIEW_SIZE_Y = 1000;
+final int VIEW_SIZE_X = 1400, VIEW_SIZE_Y = 800;
+
+
+void setup() {
+  size(VIEW_SIZE_X, VIEW_SIZE_Y, P3D);
+  noStroke();
+  colorMode(RGB, 256); 
+
+
+  table = loadTable("vpythonOutput.csv", "header");
+  println("Total number of lines are in file: ", table.getRowCount());
+
+  // Set range of Arrays length
+  X_ACC_DATA = new float[table.getRowCount()];
+  Y_ACC_DATA = new float[table.getRowCount()];
+  Z_ACC_DATA = new float[table.getRowCount()];
+
+  X_GYR_DATA = new float[table.getRowCount()];
+  Y_GYR_DATA = new float[table.getRowCount()];
+  Z_GYR_DATA = new float[table.getRowCount()];
+
+  X_FILL_DATA = new float[table.getRowCount()];
+  Y_FILL_DATA = new float[table.getRowCount()];
+  Z_FILL_DATA = new float[table.getRowCount()];
+
+  ANGLE = new float[table.getRowCount()];
+  for (int i = 0; i < table.getRowCount (); i++)
+  {
+
+    //X_ACC_DATA[i] = table.getFloat(i, "FillX");
+    //Y_ACC_DATA[i] = table.getFloat(i, "FillY");
+    //Z_ACC_DATA[i] = table.getFloat(i, "FillZ"); 
+    //println("Array "+ i+ " store : X_ACC_DATA[" + X_ACC_DATA[i]+"]" +" Y_ACC_DATA[" + Y_ACC_DATA[i]+"]" + " Z_ACC_DATA[" + Z_ACC_DATA[i]+"]");
+
+    //X_GYR_DATA[i] = table.getFloat(i, "Gx");
+    //Y_GYR_DATA[i] = table.getFloat(i, "Gy");
+    //Z_GYR_DATA[i] = table.getFloat(i, "Gz");
+    //println("Array "+ i+ " store : X_GYR_DATA[" + X_GYR_DATA[i]+"]" +" Y_GYR_DATA[" + Y_GYR_DATA[i]+"]" + " Z_GYR_DATA[" + Z_GYR_DATA[i]+"]");
+
+    X_FILL_DATA[i] = table.getFloat(i, "FillX");
+    Y_FILL_DATA[i] = table.getFloat(i, "FillY");
+    Z_FILL_DATA[i] = table.getFloat(i, "FillZ");
+    // println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
+  }
+}
