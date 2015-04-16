@@ -53,6 +53,9 @@ void setup() {
 
   //THIS FONT IS LOCATED IN DATA DIRECTORY 
   font = loadFont("CourierNew36.vlw");
+
+  //LOAD IMAGE FROM DATA DIRECTORY
+  handTopside = loadImage("handTop.png");//Top Side
 }
 
 
@@ -76,5 +79,31 @@ void quaternionToEuler(float [] q, float [] euler, float[] ANGLE) {
   //euler[1] = 0.6;
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
   println("Theta vaule: ", euler[1]);
+}
+
+
+void topSide(PImage imag) {
+  beginShape(QUAD);
+  texture(imag);
+  // -Y "top" face
+  vertex(-20, -1, -15, 0, 0); // top width, hight
+  vertex( 20, -1, -15, 1, 0);
+  vertex( 20, -1, 15, 1, 1);
+  vertex(-20, -1, 15, 0, 1);
+  endShape();
+}
+
+//SHOW HAND MOVEMENT
+void showHand() {
+  pushMatrix();
+  translate(VIEW_SIZE_X/1.3, VIEW_SIZE_Y/1.3 + 50, 0);
+  //scale(5,5,5);
+  scale(10);
+  rotateZ(-Euler[2]);
+  rotateX(-Euler[1]);
+  rotateY(-Euler[0]);
+  //UPLOAD IMAGE
+  topSide(handTopside);
+  popMatrix();
 }
 
