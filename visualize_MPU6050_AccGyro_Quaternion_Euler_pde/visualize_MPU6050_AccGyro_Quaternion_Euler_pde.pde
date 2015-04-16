@@ -107,3 +107,27 @@ void showHand() {
   popMatrix();
 }
 
+//DRAW LOOP
+void draw() {
+  background(#000000);
+  //lights();
+  if (qnum < X_FILL_DATA.length) {
+    q =  readQ(qnum);
+    quaternionToEuler(q, Euler, ANGLE);
+    text("LD Golf and IMaR Technology Gateway ", 20, VIEW_SIZE_Y - 30);
+
+    textFont(font, 20);
+    textAlign(LEFT, TOP);
+    text("Q:\n" + q[0] + "\n" + q[1] + "\n" + q[2] + "\n" + q[3], 20, 20);
+    text("Euler Angles:\nYaw (psi)  : " + degrees(Euler[0]) + "\nPitch (theta): " + degrees(Euler[1]) + "\nRoll (phi)  : " + degrees(Euler[2]), 200, 20);
+    //drawCube();
+    showHand();
+    delay(100);
+    qnum++;
+  } else {
+    noLoop();
+    println("File End");
+    qnum = 0;
+  }
+}
+
