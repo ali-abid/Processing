@@ -21,6 +21,9 @@ Table table;
 //FONT
 PFont font;
 
+//IMAGES
+PImage handTopside;
+
 //WINDOW SIZE
 final int VIEW_SIZE_X = 1000, VIEW_SIZE_Y = 1000;
 
@@ -74,8 +77,8 @@ float [] readQ(int i) {
 //EULER FORMULAT, CONVERT QUATERNION TO EULER 
 void quaternionToEuler(float [] q, float [] euler, float[] ANGLE) {
   euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
-  euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
-  //euler[1] = ANGLE[qnum];
+  //euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
+  euler[1] = ANGLE[qnum];
   //euler[1] = 0.6;
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
   println("Theta vaule: ", euler[1]);
