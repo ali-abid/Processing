@@ -55,3 +55,15 @@ void setup() {
   font = loadFont("CourierNew36.vlw");
 }
 
+
+//QUATERNION FORMULAT, CONVERT ACCE & GYRO FILTERED DATA INTO QUATERNION 
+float [] readQ(int i) {
+  ANGLE[i] = atan2(Y_FILL_DATA[i], X_FILL_DATA[i]);
+  //println(ANGLE[i]);
+  q[0] = cos(ANGLE[i]/2);
+  q[1] = X_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[2] = Y_FILL_DATA[i] * sin(ANGLE[i]/2);
+  q[3] = Z_FILL_DATA[i] * sin(ANGLE[i]/2);
+  //println(q);
+  return q;
+}
