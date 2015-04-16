@@ -35,6 +35,13 @@ void setup() {
   table = loadTable("vpythonOutput.csv", "header");
   println("Total number of lines are in file: ", table.getRowCount());
 
+  //SET ARRAY LENGHT RANGE
+  X_FILL_DATA = new float[table.getRowCount()];
+  Y_FILL_DATA = new float[table.getRowCount()];
+  Z_FILL_DATA = new float[table.getRowCount()];
+  ANGLE = new float[table.getRowCount()];
+
+
   //THIS FONT IS LOCATED IN DATA DIRECTORY 
   font = loadFont("CourierNew36.vlw");
 }
