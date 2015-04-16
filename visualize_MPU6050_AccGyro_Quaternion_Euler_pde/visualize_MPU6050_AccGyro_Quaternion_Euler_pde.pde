@@ -41,6 +41,15 @@ void setup() {
   Z_FILL_DATA = new float[table.getRowCount()];
   ANGLE = new float[table.getRowCount()];
 
+  //STORE DATA INTO ARRAYS 
+  for (int i = 0; i < table.getRowCount (); i++)
+  {
+    X_FILL_DATA[i] = table.getFloat(i, "FillX");
+    Y_FILL_DATA[i] = table.getFloat(i, "FillY");
+    Z_FILL_DATA[i] = table.getFloat(i, "FillZ");
+    // println("Array "+ i+ " store : X_FILL_DATA[" + X_FILL_DATA[i]+"]" +" Y_FILL_DATA[" + Y_FILL_DATA[i]+"]" + " Z_FILL_DATA[" + Z_FILL_DATA[i]+"]");
+  }
+
 
   //THIS FONT IS LOCATED IN DATA DIRECTORY 
   font = loadFont("CourierNew36.vlw");
