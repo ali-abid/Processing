@@ -31,9 +31,11 @@ void setup() {
   fill(255);
   stroke(color(44, 48, 32));
 
+  //READ FILE DATA USING TABLE 
+  table = loadTable("vpythonOutput.csv", "header");
+  println("Total number of lines are in file: ", table.getRowCount());
+
   //THIS FONT IS LOCATED IN DATA DIRECTORY 
-  font = loadFont("CourierNew36.vlw"); 
-
+  font = loadFont("CourierNew36.vlw");
 }
-
 
