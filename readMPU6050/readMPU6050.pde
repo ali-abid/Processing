@@ -5,7 +5,7 @@
 // IMaR Technology Gateway, Institute of Technology Tralee
 
 
-
+#
 long lastTime = 0;
 int qnum = 0;
 Table table;
@@ -296,8 +296,8 @@ void draw() {
 
 void quaternionToEuler(float [] q, float [] euler, float[] ANGLE) {
   euler[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1); // psi
-  //euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
-  euler[1] = ANGLE[qnum];
+  euler[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]); // theta
+  //euler[1] = ANGLE[qnum];
   //euler[1] = 0.6;
   euler[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1); // phi
   println("Theta vaule: ", euler[1]);
